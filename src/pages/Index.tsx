@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Activity, FileText, Network, Cpu, AlertTriangle, Clock, Server, Database, Lock, Code, Terminal, Wifi, HardDrive, Scan, Users, AreaChart } from "lucide-react";
+import { Shield, Activity, FileText, Network, Cpu, AlertTriangle, Clock, Server, Database, Lock, Code, Terminal, Wifi, HardDrive, Scan, Users, AreaChart, WifiHigh, Bluetooth, BluetoothConnected, EthernetPort, Usb } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 
@@ -18,6 +17,13 @@ const Index = () => {
   const [scanDepth, setScanDepth] = useState("Normal");
   const [monitoredSystems, setMonitoredSystems] = useState(42);
   const [threatSeverity, setThreatSeverity] = useState("Low");
+  const [discoveredDevices, setDiscoveredDevices] = useState({
+    ethernet: 18,
+    wifi: 12,
+    bluetooth: 6,
+    usb: 4,
+    other: 2
+  });
   
   const startScan = () => {
     setScanningStatus("Scanning");
@@ -256,6 +262,56 @@ const Index = () => {
           />
         </div>
 
+        {/* Network Discovery Section */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Connected Devices</h2>
+          <div className="flex items-center space-x-2">
+            <button className="px-3 py-1 rounded text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
+              Refresh Scan
+            </button>
+            <button className="px-3 py-1 rounded text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800">
+              Export Device List
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <ConnectionCard 
+            title="Ethernet" 
+            icon={<EthernetPort className="h-5 w-5 text-blue-500" />}
+            deviceCount={discoveredDevices.ethernet}
+            status="Active"
+            lastScan="2 minutes ago"
+          />
+          <ConnectionCard 
+            title="WiFi" 
+            icon={<WifiHigh className="h-5 w-5 text-green-500" />}
+            deviceCount={discoveredDevices.wifi}
+            status="Active"
+            lastScan="5 minutes ago"
+          />
+          <ConnectionCard 
+            title="Bluetooth" 
+            icon={<BluetoothConnected className="h-5 w-5 text-indigo-500" />}
+            deviceCount={discoveredDevices.bluetooth}
+            status="Active" 
+            lastScan="8 minutes ago"
+          />
+          <ConnectionCard 
+            title="USB" 
+            icon={<Usb className="h-5 w-5 text-purple-500" />}
+            deviceCount={discoveredDevices.usb}
+            status="Active"
+            lastScan="10 minutes ago"
+          />
+          <ConnectionCard 
+            title="Other" 
+            icon={<Network className="h-5 w-5 text-yellow-500" />}
+            deviceCount={discoveredDevices.other}
+            status="Active"
+            lastScan="15 minutes ago"
+          />
+        </div>
+
         {/* Modules section */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Monitoring Modules</h2>
@@ -276,6 +332,7 @@ const Index = () => {
             description="Monitors filesystem for suspicious activities" 
             lastUpdated="10 minutes ago"
             detections={0}
+            isAI={false}
           />
           <ModuleCard 
             title="Process Monitor" 
@@ -284,6 +341,7 @@ const Index = () => {
             description="Detects suspicious process behaviors" 
             lastUpdated="5 minutes ago"
             detections={0}
+            isAI={false}
           />
           <ModuleCard 
             title="Network Sniffer" 
@@ -292,6 +350,7 @@ const Index = () => {
             description="Analyzes network traffic for threats" 
             lastUpdated="2 minutes ago"
             detections={0}
+            isAI={false}
           />
           <ModuleCard 
             title="Persistence Scanner" 
@@ -300,6 +359,7 @@ const Index = () => {
             description="Checks for persistence mechanisms" 
             lastUpdated="15 minutes ago"
             detections={0}
+            isAI={false}
           />
           <ModuleCard 
             title="Auto Scanner" 
@@ -308,6 +368,7 @@ const Index = () => {
             description="Periodically scans system components" 
             lastUpdated="30 minutes ago"
             detections={0}
+            isAI={false}
           />
           <ModuleCard 
             title="AI Anomaly Engine" 
@@ -449,6 +510,42 @@ const ModuleCard = ({ title, icon, status, description, lastUpdated, detections,
             {detections}
           </span>
         </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+// New helper component for connection cards
+const ConnectionCard = ({ title, icon, deviceCount, status, lastScan }) => (
+  <Card className="border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+    <CardHeader className="pb-2">
+      <CardTitle className="text-lg flex items-center">
+        {icon}
+        <span className="ml-2">{title}</span>
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="space-y-3">
+        <div className="flex items-center justify-center">
+          <span className="text-3xl font-bold text-gray-800 dark:text-gray-200">{deviceCount}</span>
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">devices</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status:</span>
+          <span className={`px-2 py-1 text-xs font-medium rounded ${
+            status === "Active" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : 
+            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+          }`}>
+            {status}
+          </span>
+        </div>
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-600 dark:text-gray-400">Last scan:</span>
+          <span className="font-medium text-gray-800 dark:text-gray-200">{lastScan}</span>
+        </div>
+        <Button variant="outline" className="w-full text-sm py-1" size="sm">
+          View Details
+        </Button>
       </div>
     </CardContent>
   </Card>
