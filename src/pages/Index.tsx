@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { AIInsights } from "@/components/dashboard/AIInsights";
 import { AIModelDetails } from "@/components/dashboard/AIModelDetails";
+import { ThreatSources } from "@/components/dashboard/ThreatSources";
 
 const Index = () => {
   const [systemStatus, setSystemStatus] = useState("Protected");
@@ -231,13 +232,19 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* AI Analytics Section - NEW */}
+        {/* Threat Sources & Remediation Section - NEW */}
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Threat Sources & Remediation</h2>
+        <div className="mb-8">
+          <ThreatSources />
+        </div>
+        
+        {/* AI Analytics Section */}
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">AI Analytics</h2>
         <div className="mb-8">
           <AIInsights />
         </div>
         
-        {/* AI Model Details Section - NEW */}
+        {/* AI Model Details Section */}
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">AI Model Details</h2>
         <div className="mb-8">
           <AIModelDetails />
