@@ -153,80 +153,80 @@ export function ThreatSources() {
         <CardDescription>
           Identify threat sources and recommended actions
         </CardDescription>
+      </CardHeader>
+      <CardContent>
         <Tabs defaultValue="sources" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="sources">Threat Sources</TabsTrigger>
             <TabsTrigger value="remediation">Remediation Plans</TabsTrigger>
           </TabsList>
-        </Tabs>
-      </CardHeader>
-      <CardContent>
-        <TabsContent value="sources" className="mt-0">
-          <div className="space-y-4">
-            {threatSources.map((source, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-4 w-4 mr-2 text-yellow-500" />
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{source.name}</h3>
-                  </div>
-                  <Badge className={getSeverityColor(source.severity)}>
-                    {source.severity}
-                  </Badge>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{source.description}</p>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">
-                    {source.count} incidents detected
-                  </span>
-                  <span className="flex items-center">
-                    {source.percentage}% of threats {getTrendIcon(source.trend)}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <Progress value={source.percentage} className="h-1" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="remediation" className="mt-0">
-          <div className="space-y-4">
-            {remediations.map((remedy, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center">
-                    <Settings2 className="h-4 w-4 mr-2 text-blue-500" />
-                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{remedy.threat}</h3>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Badge className={getPriorityColor(remedy.priority)}>
-                      {remedy.priority} Priority
+          <TabsContent value="sources" className="mt-0">
+            <div className="space-y-4">
+              {threatSources.map((source, index) => (
+                <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="flex items-center">
+                      <AlertTriangle className="h-4 w-4 mr-2 text-yellow-500" />
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100">{source.name}</h3>
+                    </div>
+                    <Badge className={getSeverityColor(source.severity)}>
+                      {source.severity}
                     </Badge>
-                    {remedy.automatable && (
-                      <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                        Auto-Remediation
-                      </Badge>
-                    )}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{source.description}</p>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">
+                      {source.count} incidents detected
+                    </span>
+                    <span className="flex items-center">
+                      {source.percentage}% of threats {getTrendIcon(source.trend)}
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <Progress value={source.percentage} className="h-1" />
                   </div>
                 </div>
-                <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 mb-3 pl-1">
-                  {remedy.actions.map((action, actionIndex) => (
-                    <li key={actionIndex} className="my-1">{action}</li>
-                  ))}
-                </ul>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Difficulty: <span className="font-medium">{remedy.difficulty}</span>
-                  </span>
-                  <Button size="sm" variant={remedy.automatable ? "default" : "outline"}>
-                    {remedy.automatable ? "Auto-Remediate" : "Manual Steps"}
-                  </Button>
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="remediation" className="mt-0">
+            <div className="space-y-4">
+              {remediations.map((remedy, index) => (
+                <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="flex items-center">
+                      <Settings2 className="h-4 w-4 mr-2 text-blue-500" />
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100">{remedy.threat}</h3>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Badge className={getPriorityColor(remedy.priority)}>
+                        {remedy.priority} Priority
+                      </Badge>
+                      {remedy.automatable && (
+                        <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                          Auto-Remediation
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 mb-3 pl-1">
+                    {remedy.actions.map((action, actionIndex) => (
+                      <li key={actionIndex} className="my-1">{action}</li>
+                    ))}
+                  </ul>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Difficulty: <span className="font-medium">{remedy.difficulty}</span>
+                    </span>
+                    <Button size="sm" variant={remedy.automatable ? "default" : "outline"}>
+                      {remedy.automatable ? "Auto-Remediate" : "Manual Steps"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
