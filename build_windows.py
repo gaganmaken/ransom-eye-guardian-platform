@@ -6,15 +6,65 @@ import os
 import shutil
 import subprocess
 import sys
+import site
+import glob
 
 def check_requirements():
-    """Check if required packages are installed"""
-    try:
-        import PyInstaller
-        print("PyInstaller is already installed.")
-    except ImportError:
-        print("Installing PyInstaller...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "pyinstaller"])
+    """Check and install required packages"""
+    required_packages = [
+        'PyInstaller',
+        'psutil',
+        'watchdog',
+        'scapy',
+        'PyPDF2',
+        'scikit-learn',
+        'numpy',
+        'pandas',
+        'matplotlib',
+        'joblib',
+        'tqdm',
+        'pdfkit',
+        'tabulate'
+    ]
+    
+    for package in required_packages:
+        try:
+            __import__(package)
+            print(f"{package} is already installed.")
+        except ImportError:
+            print(f"Installing {package}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+def collect_dependencies():
+    """Collect all necessary dependencies for the application"""
+    # Get site-packages directory
+    site_packages = site.getsitepackages()[0]
+    print(f"Site packages directory: {site_packages}")
+    
+    # Create temp directory for dependencies
+    if not os.path.exists("temp_deps"):
+        os.makedirs("temp_deps")
+    
+    # Copy necessary dependencies to temp directory
+    dependencies = [
+        "core", "ai", "ui", "utils", "data"
+    ]
+    
+    for dep in dependencies:
+        if os.path.exists(dep):
+            if os.path.isdir(dep):
+                if os.path.exists(f"temp_deps/{dep}"):
+                    shutil.rmtree(f"temp_deps/{dep}")
+                shutil.copytree(dep, f"temp_deps/{dep}")
+            else:
+                shutil.copy(dep, "temp_deps/")
+            print(f"Collected dependency: {dep}")
+    
+    # Create necessary empty directories
+    for dir_name in ["logs", "reports"]:
+        os.makedirs(f"temp_deps/{dir_name}", exist_ok=True)
+    
+    return True
 
 def build_executable():
     """Build the Windows executable using PyInstaller"""
@@ -30,20 +80,47 @@ def build_executable():
     if os.path.exists("build/ransomeye"):
         shutil.rmtree("build/ransomeye")
     
+    # Collect all necessary files
+    collect_dependencies()
+    
+    # Define additional data files to include
+    additional_data = [
+        ("temp_deps/core", "core"),
+        ("temp_deps/ai", "ai"),
+        ("temp_deps/ui", "ui"),
+        ("temp_deps/utils", "utils"),
+        ("temp_deps/data", "data"),
+        ("temp_deps/logs", "logs"),
+        ("temp_deps/reports", "reports"),
+        ("public/favicon.ico", "."),
+    ]
+    
+    # Prepare data arguments for PyInstaller
+    data_args = []
+    for src, dest in additional_data:
+        if os.path.exists(src):
+            data_args.extend(["--add-data", f"{src};{dest}"])
+    
     # Build the executable
-    subprocess.check_call([
+    pyinstaller_args = [
         "pyinstaller",
         "--name=RansomEye",
         "--icon=public/favicon.ico",
         "--noconsole",  # No console window
         "--onefile",    # Single executable file
-        "--add-data=data;data",  # Include data directory
-        "--add-data=ui;ui",      # Include UI directory
-        "--add-data=core;core",  # Include core directory
-        "--add-data=ai;ai",      # Include AI directory
-        "--add-data=utils;utils",  # Include utils directory
-        "main.py"
-    ])
+        "--clean",      # Clean PyInstaller cache
+        "--log-level=INFO",
+    ]
+    
+    # Add all data arguments
+    pyinstaller_args.extend(data_args)
+    
+    # Add the main script
+    pyinstaller_args.append("main.py")
+    
+    # Execute PyInstaller
+    print("Executing PyInstaller with arguments:", " ".join(pyinstaller_args))
+    subprocess.check_call(pyinstaller_args)
     
     print("Creating Windows installer...")
     try:
@@ -89,8 +166,8 @@ Name: "startupicon"; Description: "Start at system startup"; GroupDescription: "
 
 [Files]
 Source: "dist\\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "logs\\*"; DestDir: "{app}\\logs"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "dist\\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\\{#MyAppName}"; Filename: "{app}\\{#MyAppExeName}"
@@ -101,6 +178,10 @@ Name: "{commonstartup}\\{#MyAppName}"; Filename: "{app}\\{#MyAppExeName}"; Tasks
 Filename: "{app}\\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 """)
     
+    # Clean up temporary files
+    if os.path.exists("temp_deps"):
+        shutil.rmtree("temp_deps")
+    
     print("Build completed!")
     print("Executable created at: dist/RansomEye.exe")
     print("To create an installer, install InnoSetup and run: iscc setup_script.iss")
@@ -109,4 +190,3 @@ if __name__ == "__main__":
     print("==== RansomEye Windows Build Script ====")
     check_requirements()
     build_executable()
-

@@ -10,14 +10,14 @@
 ### Quick Installation:
 
 1. Run the build script by double-clicking `build_windows.bat`
-   - This will automatically install PyInstaller if needed
+   - This will automatically install PyInstaller and other required packages if needed
    - The script will create a single executable file at `dist/RansomEye.exe`
 
 ### Manual Installation Steps:
 
-1. Install PyInstaller:
+1. Install the required Python packages:
    ```
-   pip install pyinstaller
+   pip install pyinstaller psutil watchdog scapy PyPDF2 scikit-learn numpy pandas matplotlib joblib tqdm pdfkit tabulate
    ```
 
 2. Run the build script:
@@ -42,13 +42,17 @@ After building:
 1. Run `RansomEye.exe` directly from the `dist` directory
 2. Or install using the installer (if created) and run from the Start Menu
 
-## Common Issues:
+## Features Included in the Executable:
 
-### Missing Dependencies
-If you encounter "missing module" errors during the build:
-```
-pip install psutil watchdog scapy PyPDF2 scikit-learn numpy pandas matplotlib joblib tqdm pdfkit tabulate
-```
+- Complete ransomware detection engine
+- Filesystem monitoring
+- Process activity monitoring
+- Network traffic analysis
+- AI-powered anomaly detection
+- Threat remediation tools
+- Full dashboard interface
+
+## Common Issues:
 
 ### Antivirus Detection
 Some antivirus software may flag the executable. This is a false positive due to the nature of the application's scanning capabilities. Add an exception in your antivirus software if necessary.
@@ -56,6 +60,9 @@ Some antivirus software may flag the executable. This is a false positive due to
 ### Network Capturing Issues
 For network capturing functionalities, you may need to run the application as Administrator.
 
+### Missing DLL Errors
+If you encounter any missing DLL errors, ensure you have the latest Visual C++ Redistributable installed on your system.
+
 ## Support:
 
-For additional support, please file an issue on the GitHub repository or contact support@ransomeye.security.
+For additional support, please contact support@ransomeye.security.
