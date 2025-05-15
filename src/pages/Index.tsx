@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Shield, Activity, FileText, Network, Cpu, AlertTriangle, Clock, Server, Database, Lock, Code, Terminal, Wifi, HardDrive, Scan, Users, AreaChart, WifiHigh, Bluetooth, BluetoothConnected, EthernetPort, Usb } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
+import { AIInsights } from "@/components/dashboard/AIInsights";
+import { AIModelDetails } from "@/components/dashboard/AIModelDetails";
 
 const Index = () => {
   const [systemStatus, setSystemStatus] = useState("Protected");
@@ -227,6 +229,18 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* AI Analytics Section - NEW */}
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">AI Analytics</h2>
+        <div className="mb-8">
+          <AIInsights />
+        </div>
+        
+        {/* AI Model Details Section - NEW */}
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">AI Model Details</h2>
+        <div className="mb-8">
+          <AIModelDetails />
         </div>
 
         {/* Resource Usage Section */}
